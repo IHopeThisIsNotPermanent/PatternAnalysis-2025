@@ -6,7 +6,7 @@ import os
 
 from torch.utils.data import DataLoader, Dataset
 
-class UnlabeledImageDataset(Dataset):
+class LabeledImageDataset(Dataset):
     def __init__(self, image_dir, transform=None):
         self.image_dir = image_dir
         self.image_paths = [os.path.join(image_dir, img) for img in os.listdir(image_dir)]
