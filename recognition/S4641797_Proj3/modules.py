@@ -3,18 +3,15 @@ import torch.nn as nn
 
 
 class block:
-    def __init__(self, filters):
-        self.filters = filters
+    def __init__(self, inc, outc):
 
-        #TODO check what padding should be
-        self.cv1 = nn.Conv2d(self.filters, 3, padding=2)
-        #TODO check what feature num should be
-        self.bn1 = nn.BatchNorm2d()
-        self.relu1 = nn.ReLU()
+        self.cv1 = nn.Conv2d(inc, outc, kernel_size=3, padding=1)
+        self.bn1 = nn.BatchNorm2d(outc)
+        self.relu1 = nn.ReLU(inplace = True)
 
-        self.cv2 = nn.Conv2d(self.filters, 3, padding=2)
-        self.bn2 = nn.BatchNorm2d()
-        self.relu2 = nn.ReLU()
+        self.cv2 = nn.Conv2d(outc, outc, kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm2d(outc)
+        self.relu2 = nn.ReLU(inplace = True)
 
     def forward(self, x):
         x = self.cv1(x)
@@ -27,8 +24,8 @@ class block:
         return x
     
 class encoder_layer:
-    def __init__(self, filters):
-        self.b1 = block(self.filters)
+    def __init__(self, inc, outc):
+        self.b1 = block(inc, outc)
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
     def forward(self, x):
@@ -37,32 +34,32 @@ class encoder_layer:
         return skip, x
     
 class decoder_layer:
-    def __init__(self, filters):
-        self.tp1 = nn.ConvTranspose2d(filters, filters, (2,2))
-        self.b1 = block(filters)
+    def __init__(self, inc, outc):
+        self.tp1 = nn.ConvTranspose2d(inc, inc//2, kernel_size = 2, stride = 2)
+        self.b1 = block(inc, outc)
         
     def forward(self, skip, x):
         x = self.tp1(x)
-        x = torch.cat([x, skip])
+        x = torch.cat([x, skip], dim = 1)
         x = self.b1.forward(x)
         return x
 
 class ImprovedUNET(nn.Module):
-    def __init__(self):
+    def __init__(self, classes = 8, channels = 1):
         super(ImprovedUNET, self).__init__()
-        self.e1 = encoder_layer(64)
-        self.e2 = encoder_layer(128)
-        self.e3 = encoder_layer(256)
-        self.e4 = encoder_layer(512)
+        self.e1 = encoder_layer(1,64)
+        self.e2 = encoder_layer(64,128)
+        self.e3 = encoder_layer(128,256)
+        self.e4 = encoder_layer(256,512)
 
-        self.b1 = block(1024)
+        self.b1 = block(512,1024)
 
-        self.d1 = decoder_layer(512)
-        self.d2 = decoder_layer(256)
-        self.d3 = decoder_layer(128)
-        self.d4 = decoder_layer(64)
+        self.d1 = decoder_layer(1024,512)
+        self.d2 = decoder_layer(512,256)
+        self.d3 = decoder_layer(256,128)
+        self.d4 = decoder_layer(128,64)
 
-        self.c1 = nn.Conv2d(1,1,(2,2))
+        self.c1 = nn.Conv2d(64, classes)
 
     def forward(self,x):
         skip1, x = self.e1.forward(x)
