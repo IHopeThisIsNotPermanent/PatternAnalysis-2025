@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from torch.optim import Adam
 import torch
+
 from dataset import load_dataset
 from modules import ImprovedUNET
 
@@ -11,7 +12,7 @@ class DiceLoss:
     """
     def __init__(self, smooth=1):
         self.smooth = smooth
-    
+
     def __call__(self, pred, target):
         pred = torch.sigmoid(pred)
         intersection = (pred * target).sum(dim=(2, 3))
@@ -21,7 +22,6 @@ class DiceLoss:
 
 def train(EPOCHS = 100):
     batch_size = 50
-    x_dim = 256 * 128
 
     d = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -38,13 +38,12 @@ def train(EPOCHS = 100):
     for epoch in range(EPOCHS):
         overall_loss = 0
         for batch_idx, x in enumerate(train_loader):
-            x = x.view(batch_size, x_dim)
-            x = x.to(d)
+            x, label = x[0].to(d),x[1]
 
             optimizer.zero_grad()
 
-            x_hat, mean, log_var = model(x)
-            loss = loss_function(x, x_hat, mean, log_var)
+            x_hat = model(x).to(d)
+            loss = loss_function(x_hat, x)
 
             overall_loss += loss.item()
 
