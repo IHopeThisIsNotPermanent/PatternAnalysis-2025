@@ -48,7 +48,7 @@ disp(model, d)
 
 The output for the test should look like, and did in my case when running:
 
-![Alt Text]("test accuracy.PNG")
+![Alt Text](test accuracy.PNG)
 
 The output for disp should look like:
 
