@@ -5,12 +5,15 @@
 Version is relievent:
 
 python=3.10.12
+
 torch=2.8.0+cu126
+
 nibabel=5.3.2
 
 Just get the newest one and it should be fine:
 
 IPython
+
 matplotlib
 
 ### Downloading the data
