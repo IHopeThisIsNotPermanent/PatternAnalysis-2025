@@ -43,16 +43,13 @@ class decoder_layer(nn.Module):
 
     def forward(self, skip, x):
         x = self.tp1(x)
-        diffY = skip.size()[2] - x.size()[2]
-        diffX = skip.size()[3] - x.size()[3]
-        x = F.pad(x, [diffX // 2, diffX - diffX // 2,
-                        diffY // 2, diffY - diffY // 2])
+        x = F.interpolate(x, size=(skip.size(2), skip.size(3)), mode='nearest') 
         x = torch.cat([x, skip], dim = 1)
         x = self.b1.forward(x)
         return x
 
 class ImprovedUNET(nn.Module):
-    def __init__(self, classes = 8, channels = 1):
+    def __init__(self, classes = 6, channels = 1):
         super(ImprovedUNET, self).__init__()
         self.e1 = encoder_layer(1,64)
         self.e2 = encoder_layer(64,128)
@@ -69,6 +66,8 @@ class ImprovedUNET(nn.Module):
         self.c1 = nn.Conv2d(64, classes, kernel_size = 1)
 
     def forward(self,x):
+        original_size = x.size()[2:] 
+
         skip1, x = self.e1(x)
         skip2, x = self.e2(x)
         skip3, x = self.e3(x)
@@ -80,6 +79,8 @@ class ImprovedUNET(nn.Module):
         x = self.d2(skip3, x)
         x = self.d3(skip2, x)
         x = self.d4(skip1, x)
+
+        x = F.interpolate(x, size=original_size, mode='bilinear', align_corners=False)
 
         x = self.c1(x)
 
