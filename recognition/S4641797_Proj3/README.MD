@@ -52,7 +52,7 @@ The output for the test should look like, and did in my case when running:
 
 The output for disp should look like:
 
-![Alt Text]("categories.PNG")
+![Alt text](categories.PNG)
 
 The way to inprepret the diagram is you have at the top the input, and the expected map, then for each image below you have the learned shape for each label.
 
