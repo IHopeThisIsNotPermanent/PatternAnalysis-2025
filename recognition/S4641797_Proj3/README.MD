@@ -1,6 +1,7 @@
 # Requirements
 
-
+python=3.10.12
+torch
 
 # Downloading the data
 
