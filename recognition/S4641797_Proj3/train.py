@@ -6,7 +6,10 @@ from IPython.display import clear_output
 import torch
 from util import DiceLoss
 
-def train(EPOCHS = 50):
+def train(EPOCHS = 10):
+    """
+    Trains the model
+    """
     batch_size = 8
 
     d = torch.device("cuda" if torch.cuda.is_available() else "cpu")

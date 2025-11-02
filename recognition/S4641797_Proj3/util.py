@@ -5,6 +5,8 @@ class DiceLoss:
     From:
     https://medium.com/data-scientists-diary/implementation-of-dice-loss-vision-pytorch-7eef1e438f68
     Modified to handle multi-class targets and match input dimensions.
+
+    Simple Dice Loss algorithm for multiple labels
     """
     def __init__(self, smooth=1):
         self.smooth = smooth

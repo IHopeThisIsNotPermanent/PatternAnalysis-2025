@@ -7,6 +7,8 @@ from dataset import LabeledImageDataset
 
 
 def test(model, d):
+    """A simple function that calcualtes the accuracy against the validation dataset.
+    """
     loss_function = DiceLoss()
 
     transform = transforms.Compose([transforms.ToTensor(),])
@@ -26,6 +28,8 @@ def test(model, d):
     print(f"test accuracy for all labels: {1 - overall_loss/total}")
 
 def disp(model, d):
+    """Prints a couple of example inputs, labeled images, and model results.
+    """
     transform = transforms.Compose([transforms.ToTensor(),])
     validate = LabeledImageDataset('./data/keras_slices_data/keras_slices_train',
                                                           './data/keras_slices_data/keras_slices_seg_train',

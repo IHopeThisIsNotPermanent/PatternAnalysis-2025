@@ -4,6 +4,9 @@ import torch.nn.functional as F
 
 
 class block(nn.Module):
+    """
+    The standard UNet Block
+    """
     def __init__(self, inc, outc):
         super(block, self).__init__()
         self.cv1 = nn.Conv2d(inc, outc, kernel_size=3, padding=1)
@@ -25,6 +28,9 @@ class block(nn.Module):
         return x
 
 class encoder_layer(nn.Module):
+    """
+    The standard UNET encoder layer
+    """
     def __init__(self, inc, outc):
         super(encoder_layer, self).__init__()
         self.b1 = block(inc, outc)
@@ -36,6 +42,9 @@ class encoder_layer(nn.Module):
         return skip, x
 
 class decoder_layer(nn.Module):
+    """
+    The standard UNET decoder layer
+    """
     def __init__(self, inc, outc):
         super(decoder_layer, self).__init__()
         self.tp1 = nn.ConvTranspose2d(inc, inc//2, kernel_size = 2, stride = 2)
@@ -49,6 +58,9 @@ class decoder_layer(nn.Module):
         return x
 
 class ImprovedUNET(nn.Module):
+    """
+    All the layers above collected into a UNet.
+    """
     def __init__(self, classes = 6, channels = 1):
         super(ImprovedUNET, self).__init__()
         self.e1 = encoder_layer(1,64)

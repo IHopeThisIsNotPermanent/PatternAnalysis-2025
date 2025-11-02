@@ -11,6 +11,10 @@ import torch
 import torch.nn.functional as F
 
 class LabeledImageDataset(Dataset):
+    """
+    Kinda misnamed, becuase its not really a labeled dataset, though i guess the other set of images are
+    the labels.
+    """
     def __init__(self, image_dir, label_image_dir, transform=None):
         self.image_dir = image_dir
         self.image_paths = [os.path.join(image_dir, img) for img in os.listdir(image_dir)]
@@ -44,6 +48,9 @@ class LabeledImageDataset(Dataset):
         return image, limage
 
 def load_dataset():
+    """
+    Use this to get the train and test DataLoader classes.
+    """
     transform = transforms.Compose([transforms.ToTensor(),])
 
     batch_size = 8
